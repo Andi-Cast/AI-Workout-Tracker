@@ -1,5 +1,6 @@
 package backend.AIGymTracker.dto;
 
+import backend.AIGymTracker.validation.ValidGoalType;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -30,6 +31,7 @@ public class RegisterRequest {
     private Integer age;
 
     @NotNull(message = "Goal type is required")
+    @ValidGoalType
     private String goalType;
 
 }
