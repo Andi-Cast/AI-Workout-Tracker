@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/feedback")
+@RequestMapping("/api/workout-feedback")
 @RequiredArgsConstructor
 public class WorkoutFeedbackController {
     private final WorkoutFeedbackService workoutFeedbackService;

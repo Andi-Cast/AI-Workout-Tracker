@@ -66,6 +66,22 @@ public class WorkoutLogServiceImpl implements WorkoutLogService {
     }
 
     @Override
+    public WorkoutLogResponse updateWorkoutLog(Long id, WorkoutLogRequest request) {
+        WorkoutLog existingLog = workoutLogRepository.findById(id)
+                .orElseThrow(WorkoutLogNotFoundException::new);
+        
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+        
+        existingLog.setUser(user);
+        existingLog.setDate(request.getDate());
+        existingLog.setNotes(request.getNotes());
+        
+        workoutLogRepository.save(existingLog);
+        return workoutLogMapper.toWorkoutLogResponse(existingLog);
+    }
+
+    @Override
     public void deleteWorkoutLog(Long id) {
         if(!workoutLogRepository.existsById(id)) {
             throw new WorkoutLogNotFoundException();

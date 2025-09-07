@@ -31,6 +31,20 @@ public class BodyStatController {
         return ResponseEntity.ok(bodyStatService.getBodyStatById(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BodyStat> update(@PathVariable Long id, @Valid @RequestBody BodyStatRequest request) {
+        authorizationService.validateBodyStatAccess(id);
+        authorizationService.validateUserAccess(request.getUserId(), "body stats");
+        
+        // Get existing entry and update
+        BodyStat existingBodyStat = bodyStatService.getBodyStatById(id);
+        existingBodyStat.setDate(request.getDate());
+        existingBodyStat.setWeight(request.getWeight());
+        existingBodyStat.setBodyFatPercentage(request.getBodyFatPercentage());
+        
+        return ResponseEntity.ok(bodyStatService.saveBodyStat(existingBodyStat));
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BodyStat>> getByUserId(@PathVariable Long userId) {
         authorizationService.validateUserAccess(userId, "body stats");

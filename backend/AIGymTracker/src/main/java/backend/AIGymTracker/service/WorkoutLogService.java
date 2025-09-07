@@ -12,5 +12,6 @@ public interface WorkoutLogService {
     List<WorkoutLogResponse> getWorkoutLogsByUserId (Long userId);
     List<WorkoutLogResponse> getWorkoutLogsByUserIdAndBetween(Long userId, LocalDate start, LocalDate end);
     WorkoutLogResponse getWorkoutLogById(Long id);
+    WorkoutLogResponse updateWorkoutLog(Long id, WorkoutLogRequest request);
     void deleteWorkoutLog(Long id);
 }

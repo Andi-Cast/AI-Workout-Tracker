@@ -47,6 +47,14 @@ public class WorkoutLogController {
         return ResponseEntity.ok(workoutLogService.getWorkoutLogById(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<WorkoutLogResponse> updateWorkoutLog(@PathVariable Long id, @Valid @RequestBody WorkoutLogRequest request) {
+        authorizationService.validateWorkoutLogAccess(id);
+        authorizationService.validateUserAccess(request.getUserId(), "workout logs");
+        
+        return ResponseEntity.ok(workoutLogService.updateWorkoutLog(id, request));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLogById(@PathVariable Long id) {
         authorizationService.validateWorkoutLogAccess(id);
