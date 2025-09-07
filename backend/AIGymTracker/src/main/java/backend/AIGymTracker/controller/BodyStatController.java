@@ -27,7 +27,7 @@ public class BodyStatController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BodyStat> getById(@PathVariable Long id) {
-        // Note: This would need authorization validation based on the BodyStat's user
+        authorizationService.validateBodyStatAccess(id);
         return ResponseEntity.ok(bodyStatService.getBodyStatById(id));
     }
 
@@ -47,7 +47,7 @@ public class BodyStatController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        // Note: This would need authorization validation based on the BodyStat's user
+        authorizationService.validateBodyStatAccess(id);
         bodyStatService.deleteBodyStatById(id);
         return ResponseEntity.noContent().build();
     }
