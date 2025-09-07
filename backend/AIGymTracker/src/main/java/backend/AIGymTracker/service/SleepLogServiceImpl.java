@@ -1,6 +1,7 @@
 package backend.AIGymTracker.service;
 
 import backend.AIGymTracker.entity.SleepLog;
+import backend.AIGymTracker.exceptions.SleepLogNotFoundException;
 import backend.AIGymTracker.repository.SleepLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,13 @@ public class SleepLogServiceImpl implements SleepLogService {
     @Override
     public SleepLog getSleepLogById(Long id) {
         return sleepLogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("SleepLog not found"));
+                .orElseThrow(() -> new SleepLogNotFoundException(id));
     }
 
     @Override
     public void deleteSleepLogById(Long id) {
+        SleepLog sleepLog = sleepLogRepository.findById(id)
+            .orElseThrow(() -> new SleepLogNotFoundException(id));
         sleepLogRepository.deleteById(id);
     }
 }

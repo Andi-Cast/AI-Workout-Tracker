@@ -4,6 +4,8 @@ import backend.AIGymTracker.dto.RegisterRequest;
 import backend.AIGymTracker.dto.UpdateUserRequest;
 import backend.AIGymTracker.entity.GoalType;
 import backend.AIGymTracker.entity.User;
+import backend.AIGymTracker.exceptions.EmailAlreadyExistsException;
+import backend.AIGymTracker.exceptions.UserNotFoundException;
 import backend.AIGymTracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +20,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            throw new EmailAlreadyExistsException(request.getEmail(), "is already in use");
         }
 
         var user = new User();
@@ -33,15 +35,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
     }
 
     @Override
     public User updateUser(Long userId, UpdateUserRequest request) {
-        var user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+        var user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found"));
+            
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
         user.setEmail(request.getEmail());
@@ -50,10 +52,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+        var user = userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
         userRepository.deleteById(id);
     }
 }

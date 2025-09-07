@@ -1,6 +1,7 @@
 package backend.AIGymTracker.service;
 
 import backend.AIGymTracker.entity.ExerciseEntry;
+import backend.AIGymTracker.exceptions.ExerciseEntryNotFoundException;
 import backend.AIGymTracker.repository.ExerciseEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,11 +26,13 @@ public class ExerciseEntryServiceImpl implements ExerciseEntryService {
     @Override
     public ExerciseEntry getExerciseEntryById(Long id) {
         return exerciseEntryRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Exercise entry not found"));
+                        .orElseThrow(() -> new ExerciseEntryNotFoundException(id));
     }
 
     @Override
     public void deleteExerciseEntryById(Long id) {
+        ExerciseEntry exerciseEntry = exerciseEntryRepository.findById(id)
+            .orElseThrow(() -> new ExerciseEntryNotFoundException(id));
         exerciseEntryRepository.deleteById(id);
     }
 }
