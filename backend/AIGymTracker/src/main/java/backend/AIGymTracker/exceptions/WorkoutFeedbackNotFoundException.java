@@ -4,4 +4,8 @@ public class WorkoutFeedbackNotFoundException extends RuntimeException {
     public WorkoutFeedbackNotFoundException() {
       super("Workout Feedback Not Found");
     }
+    
+    public WorkoutFeedbackNotFoundException(String message) {
+        super(message);
+    }
 }
