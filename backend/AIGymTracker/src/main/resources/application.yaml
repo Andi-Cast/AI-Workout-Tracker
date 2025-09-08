@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/health_tracker_db?createDatabaseIfNotExist=true
     username: root
-    password: andi1234
+    password: mysql123
 
   jpa:
     show-sql: true
@@ -21,6 +21,11 @@ spring:
     locations: classpath:db/migration
 
   jwt:
-    secret: "D62Z3JZYjEl2rf1J5vuIMfqOhxULGfaGCP8V2TuzHlo="
+    secret: ${JWT_SECRET}
     accessTokenExpiration: 9000000
     refreshTokenExpiration: 604800
+
+aws:
+  access-key: ${AWS_ACCESS_KEY_ID}
+  secret-key: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION:us-east-1}
