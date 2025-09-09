@@ -3,7 +3,10 @@ package backend.AIGymTracker.controller;
 import backend.AIGymTracker.dto.WorkoutLogRequest;
 import backend.AIGymTracker.dto.WorkoutLogResponse;
 import backend.AIGymTracker.entity.WorkoutLog;
+import backend.AIGymTracker.repository.WorkoutInsightRepository;
+import backend.AIGymTracker.repository.WorkoutLogRepository;
 import backend.AIGymTracker.service.AuthorizationService;
+import backend.AIGymTracker.service.PostWorkoutFeedbackService;
 import backend.AIGymTracker.service.WorkoutLogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,9 @@ import java.util.List;
 public class WorkoutLogController {
     private final WorkoutLogService workoutLogService;
     private final AuthorizationService authorizationService;
+    private final PostWorkoutFeedbackService postWorkoutFeedbackService;
+    private final WorkoutInsightRepository workoutInsightRepository;
+    private final WorkoutLogRepository workoutLogRepository;
 
     @PostMapping
     public ResponseEntity<WorkoutLogResponse> save(@Valid @RequestBody WorkoutLogRequest request) {
@@ -60,5 +66,23 @@ public class WorkoutLogController {
         authorizationService.validateWorkoutLogAccess(id);
         workoutLogService.deleteWorkoutLog(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/feedback")
+    public ResponseEntity<String> generateFeedback(@PathVariable Long id) {
+        authorizationService.validateWorkoutLogAccess(id);
+        String response = postWorkoutFeedbackService.generatePostWorkoutFeedback(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/feedback")
+    public ResponseEntity<String> getFeedbackById(@PathVariable Long id) {
+        authorizationService.validateWorkoutLogAccess(id);
+        WorkoutLog workoutLog = workoutLogRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Workout not found"));
+        
+        return workoutInsightRepository.findByWorkoutLog(workoutLog)
+            .map(insight -> ResponseEntity.ok(insight.getGeneratedFeedback()))
+            .orElse(ResponseEntity.notFound().build());
     }
 }
